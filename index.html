@@ -200,11 +200,29 @@
         let btns = document.getElementById('btns');
         let keyboard = 0;
         btns.style.display = 'none';
+        const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+        if (!hasTouch) {
+            document.getElementById("rightclickbtn").style.display = 'none';
+            document.getElementById("keyboardbtn").style.display  = 'none';
+            document.getElementById("PageDownbtn").style.display = 'none';
+            document.getElementById("PageUpbtn").style.display = 'none';
+        }
         document.getElementById("rightclickbtn").onclick = sendCtrlAltDel;
         document.getElementById("keyboardbtn").onclick = truekeyboard;
         document.getElementById("fullscreenbtn").onclick = fullscreen;
         document.getElementById("PageDownbtn").onclick = keypagedown;
         document.getElementById("PageUpbtn").onclick = keypageup;
+        document.getElementById("clipbtn").onclick = sendclip;
+        function rclip(e) {
+            navigator.clipboard.writeText(e.detail.text)
+        }
+        function sendclip() {
+            //let text;
+            navigator.clipboard.readText().then(
+                (text) => (rfb.clipboardPasteFrom(text)),
+            );
+
+        }
         function truekeyboard() {
             let kboard = document.getElementById("kboard");
             let kb = document.getElementById("kb")
@@ -224,6 +242,7 @@
 
         }
         maketruekeyboard();
+
         function firekeyboard(keys, k8, kb) {
             let container = document.getElementById(k8);
             let kboard = document.getElementById(kb);
@@ -376,6 +395,7 @@
             //status(' ', 'normal');
             l.textContent = ''
             btns.style.display = ''
+
             }
 
         function disconnected(e) {
@@ -463,12 +483,14 @@
                             shared: WebUtil.getConfigVar('shared', true),
                             credentials: { password: password } });
             rfb.viewOnly = WebUtil.getConfigVar('view_only', false);
+            rfb.qualityLevel = 0
             rfb.addEventListener("connect",  connected);
             rfb.addEventListener("disconnect", disconnected);
             rfb.addEventListener("securityfailure", sf);
             rfb.addEventListener("capabilities", function () { updatePowerButtons(); });
             rfb.addEventListener("credentialsrequired", credentials);
             rfb.addEventListener("desktopname", updateDesktopName);
+            rfb.addEventListener("clipboard", rclip);
             rfb.scaleViewport = WebUtil.getConfigVar('scale', false);
             rfb.resizeSession = WebUtil.getConfigVar('resize', true);
             rfb.focus();
@@ -483,11 +505,12 @@
     <div>
         <div id="noVNC_status">Loading</div>
         <div id="btns">
-        <button id="rightclickbtn">RightClick</button>
-        <button id="keyboardbtn">Keyboard</button>
-        <button id="fullscreenbtn">Fullscreen</button>
-        <button id="PageUpbtn">PageUP</button>
-        <button id="PageDownbtn">PageDown</button>
+        <button style="font-size: 10px" id="rightclickbtn">RightClick</button>
+        <button style="font-size: 10px" id="keyboardbtn">Keyboard</button>
+        <button style="font-size: 10px" id="fullscreenbtn">Fullscreen</button>
+        <button style="font-size: 10px" id="PageUpbtn">PageUP</button>
+        <button style="font-size: 10px" id="PageDownbtn">PageDown</button>
+        <button style="font-size: 10px" id="clipbtn">SendClip</button>
         </div>
     </div>
     <div id="noVNC_buttons">
