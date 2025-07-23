@@ -1,3 +1,4 @@
+not mainted. please turn to https://github.com/akani2984/WVNC-Refreshed 
 1 tigervnc on Linux is the only supported vncserver
 2 usage :
 vncserver :1
